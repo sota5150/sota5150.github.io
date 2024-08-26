@@ -25,13 +25,43 @@
 
 <script>
 // この中身を書いてください。
-// 応答の定義（ハッシュ）    
+// 応答の定義（ハッシュ）
+
+// おススメのフェスのラインナップ
+var fes = {
+    "RUSH BALL": "https://www.rushball.com/",
+    "OSAKA HAZIKETEMAZARE FESTIVAL": "http://haziketemazare.com/2024/",
+    "OSAKA GIGANTIC MUSIC FESTIVAL": "http://www.giga-osaka.com/",
+    "SUMMER SONIC": "https://www.summersonic.com/tt/osaka-day1/",
+    "FUJI ROCK FESTIVAL": "https://www.fujirockfestival.com/",
+    "ROCK IN JAPAN FESTIVAL": "https://rijfes.jp/",
+    "METROCK": "https://metrock.jp/",
+    "COUNTDOWN JAPAN": "https://countdownjapan.jp/",
+    "DEAD POP FESTiVAL": "https://deadpopfest.com/",
+    "京都大作戦":"https://kyoto-daisakusen.kyoto/24/",
+    "響都超特急":"https://kue.rotten-g.com/24/",
+    "MONSTER baSH":"https://www.monsterbash.jp/",
+    "RISING SUN ROCK FESTIVAL":"https://rsr.wess.co.jp/2024/",
+    "OTODAMA ROCK FES":"https://shimizuonsen.com/otodama/24/",
+    "BLARE FEST":"https://blarefest.com/",
+    "スキマフェス":"https://www.office-augusta.com/sukimaswitch/sukimafes/",
+    "氣志團万博":"https://kishidanbanpaku.com/s/kbpk/?ima=4203",
+    "山人音楽祭":"http://yamabito-ongakusai.com/2024/",
+    "KITAKAZE ROCK FES":"https://kitakazerockfes.com/",
+    "YON FES":"https://yonfes.nagoya/feature/2024"
+};
+const randomFes = getRandomFestival(fes);
+
+
 var response = {
-    "あなた,誰 || 君,誰 || お前,誰": ["わたしはあなたの友達,ロボッタです"],
-    "年齢,何歳 || 年齢,おいくつ || 何歳": ["300歳です"],
+    "あなた,誰": ["わたしはあなたの友達,ロボッタです"],
+    "君,誰": ["わたしはあなたの友達,ロボッタです"],
+    "お前,誰": ["わたしはあなたの友達,ロボッタです"],
+    "年齢,何歳": ["300歳です"],
+    "年齢,おいくつ": ["300歳です"],
+    "何歳": ["300歳です"],
     "好き,食べ物": ["焼肉です"],
-    "大阪,夏フェス || 大阪,音楽フェス ":["RUSH BALL, OSAKA HAZIKETEMAZARE FESTIVAL, OSAKA GIGANTIC MUSIC FESTIVALなどがあります"],
-	"ハジケテマザレフェスティバル|| 弾けて混ざれ, フェスティバル || おすすめ,フェス": ["OSAKA HAZIKETEMAZARE FESTIVALは、大阪府泉大津市にある泉大津フェスティバルパークで開催される音楽フェスティバルです。", "http://haziketemazare.com/2024/"]
+    "おすすめ,フェス": ["おススメのフェスは"] //返答に変数のfesを参照する
 };
 
 const URL = "https://jlp.yahooapis.jp/NLUService/V2/analyze?appid="; // APIのリクエストURL
@@ -93,6 +123,11 @@ asr.onresult = function(event){
  		});
 
         if(answer) {
+            if(answer === "おススメのフェスは"){
+                let randomFes = getRandomFestival(fes);
+                answer += randomFes.name + "です";
+                webpage = randomFes.url;
+            }
             output += '<span>You: ' + transcript + '</span><span>Answer: ' + answer + '</span>';
             tts.text = answer;
             resultOutput.innerHTML = output;
@@ -153,6 +188,15 @@ function callYahooAPI(question) {
         }
     };
     request.send(jsondata);
+}
+
+function getRandomFestival(fesObject) {
+  const festivals = Object.keys(fesObject);
+  const randomIndex = Math.floor(Math.random() * festivals.length);
+  const randomFestival = festivals[randomIndex];
+  const randomUrl = fesObject[randomFestival];
+  
+  return { name: randomFestival, url: randomUrl };
 }
 
 // 開始ボタンのイベントハンドラ
